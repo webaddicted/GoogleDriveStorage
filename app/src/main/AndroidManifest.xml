@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright 2013 Google, Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.deepaksharma.webaddicted"
+    android:versionCode="1"
+    android:versionName="1.0">
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="26" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".Final.GlobalClass"
+        android:allowBackup="true"
+        android:icon="@drawable/drive"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="com.deepaksharma.webaddicted.MainActivity"
+            android:label="@string/app_name">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <!-- The API key for Google Maps-based APIs. -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <service
+            android:name="com.deepaksharma.webaddicted.ui.events.MyDriveEventService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.drive.events.HANDLE_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name="com.deepaksharma.webaddicted.ui.folder.HomeActivity"
+            android:label="@string/app_name">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.RetrieveContentsActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.RetrieveContentsWithProgressDialogActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFileActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateEmptyFileActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFileInAppFolderActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFolderActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.DeleteFileActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.AppendContentsActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.RewriteContentsActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.EditMetadataActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFileWithCreatorActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.RetrieveMetadataActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFileInFolderActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFolderInFolderActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesInFolderActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.PinFileActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.events.ListenChangeEventsForFilesActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.events.SubscribeChangeEventsForFilesActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryNonTextFilesActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesSharedWithMeActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesWithTitleActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryStarredTextFilesActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryTextOrHtmlFilesActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.InsertUpdateCustomPropertyActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesWithCustomPropertyActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.DeleteCustomPropertyActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QuerySortedFilesActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.Final.CreateDirectory">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
