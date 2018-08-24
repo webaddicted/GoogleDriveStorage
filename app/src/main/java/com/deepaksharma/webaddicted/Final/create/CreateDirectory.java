@@ -1,20 +1,23 @@
-package com.deepaksharma.webaddicted.Final;
+package com.deepaksharma.webaddicted.Final.create;
 
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
+import com.deepaksharma.webaddicted.Final.BackupConstant;
 import com.deepaksharma.webaddicted.R;
+import com.deepaksharma.webaddicted.databinding.ActivityCreateDirectoryBinding;
 import com.deepaksharma.webaddicted.ui.folder.BaseDemoActivity;
 import com.deepaksharma.webaddicted.ui.folder.HomeActivity;
 import com.google.android.gms.drive.DriveContents;
@@ -28,11 +31,9 @@ import com.google.android.gms.drive.query.Filters;
 import com.google.android.gms.drive.query.Query;
 import com.google.android.gms.drive.query.SearchableField;
 
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,21 +45,24 @@ import java.util.concurrent.ExecutionException;
 
 public class CreateDirectory extends BaseDemoActivity implements View.OnClickListener {
     String TAG = CreateDirectory.class.getSimpleName();
+    ActivityCreateDirectoryBinding createDirectoryBinding;
+    CreateViewModel createViewModel;
     DriveId uploadDriveId;
-    EditText editText;
     String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_directory);
-        findViewById(R.id.createDirectory).setOnClickListener(this);
-        findViewById(R.id.deleteDirectory).setOnClickListener(this);
-        findViewById(R.id.drivePage).setOnClickListener(this);
-        findViewById(R.id.downloadFile).setOnClickListener(this);
-        findViewById(R.id.uploadFile).setOnClickListener(this);
-        findViewById(R.id.createFolder).setOnClickListener(this);
-        editText = findViewById(R.id.edt_DeleteDirectory);
+        createDirectoryBinding = DataBindingUtil.setContentView(this, R.layout.activity_create_directory);
+//        createViewModel = ViewModelProviders.of(this).get(CreateViewModel.class);
+
+        createDirectoryBinding.createDirectory.setOnClickListener(this);
+        createDirectoryBinding.deleteDirectory.setOnClickListener(this);
+        createDirectoryBinding.drivePage.setOnClickListener(this);
+        createDirectoryBinding.downloadFile.setOnClickListener(this);
+        createDirectoryBinding.uploadFile.setOnClickListener(this);
+        createDirectoryBinding.createFolder.setOnClickListener(this);
+
 
 //      all drive api work on background thread
 //     Task.await is used to pull driver process in main thread
@@ -71,8 +75,9 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
                 createFolderStructure();
                 break;
             case R.id.deleteDirectory:
-                if (editText.getText().toString() != null && editText.getText().toString().length() > 0)
-                    deleteFolderExist(editText.getText().toString());
+                if (createDirectoryBinding.edtDeleteDirectory.getText().toString() != null &&
+                        createDirectoryBinding.edtDeleteDirectory.getText().toString().length() > 0)
+                    deleteFolderExist(createDirectoryBinding.edtDeleteDirectory.getText().toString());
                 break;
             case R.id.uploadFile:
                 isFolderExist(BackupConstant.parentFolderName, new CallbackListener() {
@@ -401,11 +406,13 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
                     createFolderInFolder(folderName, driveId.asDriveFolder(), new CallbackListener() {
                         @Override
                         public void Success(DriveId driveId) {
+                            showMessage("folder successfully created "+driveId);
                             Log.d(TAG, "Success : -> " + driveId);
                         }
 
                         @Override
                         public void Failure() {
+                            Toast.makeText(CreateDirectory.this, "Folder creation filed", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "Failure: -> ");
                         }
                     });
@@ -417,17 +424,14 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
 
     public interface CallbackListener {
         void Success(DriveId driveId);
-
         void Failure();
     }
 
     private void pickFile() {
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
         chooseFile.setType("*/*");
-        startActivityForResult(
-                Intent.createChooser(chooseFile, "Choose a file"),
-                BackupConstant.PICKFILE_RESULT_CODE
-        );
+        startActivityForResult(Intent.createChooser(chooseFile, "Choose a file"),
+                BackupConstant.PICKFILE_RESULT_CODE);
     }
 
     @Override

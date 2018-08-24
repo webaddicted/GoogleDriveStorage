@@ -1,7 +1,9 @@
-package com.deepaksharma.webaddicted.Final;
+package com.deepaksharma.webaddicted;
 
 import android.app.Application;
 import android.os.Environment;
+
+import com.deepaksharma.webaddicted.Final.BackupConstant;
 
 import java.io.File;
 
@@ -13,9 +15,6 @@ public class GlobalClass extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        File folder = new File(Environment.getExternalStorageDirectory() + "/GD");
-        if (!folder.exists()) {
-            folder.mkdir();
-        }
+        BackupConstant.createAppFolder();
     }
 }

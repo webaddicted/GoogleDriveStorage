@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 27
+//    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "com.deepaksharma.webaddicted"
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         jackOptions {
@@ -24,15 +24,26 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    dataBinding() {
+        enabled = true
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:26.1.0'
-
-//    compile 'com.google.android.gms:play-services-drive:11.6.0'
-//    compile 'com.google.android.gms:play-services-auth:11.6.0'
-    compile 'com.google.android.gms:play-services-auth:15.0.1'
-    compile 'com.google.android.gms:play-services-drive:15.0.1'
-    compile 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+//    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'com.android.support:support-v4:27.1.1'
+//    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    //    compile 'com.google.android.gms:play-services-drive:11.6.0'
+    //    compile 'com.google.android.gms:play-services-auth:11.6.0'
+    implementation 'com.google.android.gms:play-services-auth:15.0.1'
+    implementation 'com.google.android.gms:play-services-drive:15.0.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'android.arch.lifecycle:runtime:1.1.1'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha01"
+    implementation 'com.android.support:design:27.1.1'
 }

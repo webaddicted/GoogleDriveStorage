@@ -17,11 +17,9 @@
     package="com.deepaksharma.webaddicted"
     android:versionCode="1"
     android:versionName="1.0">
-
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="26" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -30,26 +28,24 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".Final.GlobalClass"
+        android:name=".GlobalClass"
         android:allowBackup="true"
         android:icon="@drawable/drive"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.deepaksharma.webaddicted.MainActivity"
+            android:name="com.deepaksharma.webaddicted.Final.create.CreateDirectory"
             android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!-- The API key for Google Maps-based APIs. -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -62,15 +58,8 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name="com.deepaksharma.webaddicted.ui.folder.HomeActivity"
-            android:label="@string/app_name">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
+        <activity android:name="com.deepaksharma.webaddicted.MainActivity" />
+        <activity android:name="com.deepaksharma.webaddicted.ui.folder.HomeActivity" />
         <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesActivity" />
         <activity android:name="com.deepaksharma.webaddicted.ui.folder.RetrieveContentsActivity" />
         <activity android:name="com.deepaksharma.webaddicted.ui.folder.RetrieveContentsWithProgressDialogActivity" />
@@ -99,13 +88,7 @@
         <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesWithCustomPropertyActivity" />
         <activity android:name="com.deepaksharma.webaddicted.ui.folder.DeleteCustomPropertyActivity" />
         <activity android:name="com.deepaksharma.webaddicted.ui.folder.QuerySortedFilesActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.Final.CreateDirectory">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

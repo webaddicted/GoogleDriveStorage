@@ -60,8 +60,8 @@ import java.io.Writer;
  * user is prompted with a pre-made dialog which allows them to choose the file location.
  */
 public class MainActivity extends Activity {
-
     private static final String TAG = MainActivity.class.getSimpleName();
+
     private static final int REQUEST_CODE_SIGN_IN = 0;
     private static final int REQUEST_CODE_CAPTURE_IMAGE = 1;
     private static final int REQUEST_CODE_CREATOR = 2;
