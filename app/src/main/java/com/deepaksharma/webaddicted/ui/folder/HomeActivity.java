@@ -17,6 +17,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -47,6 +49,9 @@ public class HomeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final Window win= getWindow();
+        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.activity_home);
 
         String[] titles = getResources().getStringArray(R.array.titles_array);
@@ -57,6 +62,7 @@ public class HomeActivity extends Activity {
             Intent intent = new Intent(getBaseContext(), sActivities[i]);
             startActivity(intent);
         });
+//
         findViewById(R.id.btn_original).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

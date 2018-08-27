@@ -1,20 +1,26 @@
 package com.deepaksharma.webaddicted;
 
 import android.app.Application;
-import android.os.Environment;
 
 import com.deepaksharma.webaddicted.Final.BackupConstant;
-
-import java.io.File;
+import com.deepaksharma.webaddicted.db.DBUtilites;
+import com.deepaksharma.webaddicted.preference.PreferenceUtil;
 
 /**
  * Created by deepaksharma on 7/8/18.
  */
 
 public class GlobalClass extends Application {
+    private static GlobalClass mInstance;
     @Override
     public void onCreate() {
         super.onCreate();
         BackupConstant.createAppFolder();
+//        DBUtilites.getInstance(this);
+        PreferenceUtil.init(getApplicationContext());
+        mInstance = this;
+    }
+    public static GlobalClass getInstance() {
+        return mInstance;
     }
 }

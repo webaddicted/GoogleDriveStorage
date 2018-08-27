@@ -5,62 +5,93 @@
 
     <data></data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="com.deepaksharma.webaddicted.Final.create.CreateDirectory">
-
-        <Button
-            android:id="@+id/createDirectory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create Directory" />
-
-        <EditText
-            android:id="@+id/edt_DeleteDirectory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter folder name" />
-
-        <Button
-            android:id="@+id/deleteDirectory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Delete Directory" />
-
-        <Button
-            android:id="@+id/uploadFile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Upload file" />
-
-        <Button
-            android:id="@+id/downloadFile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Download file" />
-
-        <Button
-            android:id="@+id/createFolder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create Folder" />
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="bottom"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:context="com.deepaksharma.webaddicted.Final.create.CreateDirectory">
 
             <Button
-                android:id="@+id/drivePage"
+                android:id="@+id/createDirectory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="#FFFFFF"
-                android:text="" />
-        </LinearLayout>
+                android:text="Create Directory" />
 
-    </LinearLayout>
+            <EditText
+                android:id="@+id/edt_DeleteDirectory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter folder name" />
+
+            <Button
+                android:id="@+id/deleteDirectory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete Directory" />
+
+            <Button
+                android:id="@+id/uploadFile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upload file" />
+
+            <Button
+                android:id="@+id/downloadFile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Download file" />
+
+            <Button
+                android:id="@+id/createFolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create Folder" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:text="Work Manager"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/createDb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create Db" />
+            <Button
+                android:id="@+id/uploadWorker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upload files" />
+            <Button
+                android:id="@+id/retriveWorker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Retrive files" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:layout_marginTop="55dp"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/drivePage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="#FFFFFF"
+                    android:text="" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 </layout>

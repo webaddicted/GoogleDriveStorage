@@ -1,8 +1,7 @@
 package com.deepaksharma.webaddicted.Final.create;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
@@ -13,11 +12,26 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.deepaksharma.webaddicted.Final.BackupConstant;
+import com.deepaksharma.webaddicted.Final.worker.CheckGoogleSignInWork;
+import com.deepaksharma.webaddicted.Final.worker.DriveDirectoryWork;
+import com.deepaksharma.webaddicted.Final.worker.RetrieveMediaWork;
+import com.deepaksharma.webaddicted.Final.worker.RetriveDbWork;
+import com.deepaksharma.webaddicted.Final.worker.UploadDbWork;
+import com.deepaksharma.webaddicted.Final.worker.UploadMediaWork;
 import com.deepaksharma.webaddicted.R;
+import com.deepaksharma.webaddicted.ReceiverCode;
 import com.deepaksharma.webaddicted.databinding.ActivityCreateDirectoryBinding;
+import com.deepaksharma.webaddicted.db.DBUtilites;
+import com.deepaksharma.webaddicted.db.MediaDao;
+import com.deepaksharma.webaddicted.db.MyAppDatabase;
+import com.deepaksharma.webaddicted.db.entity.UserInfo;
+import com.deepaksharma.webaddicted.preference.PreferenceConstant;
+import com.deepaksharma.webaddicted.preference.PreferenceUtil;
 import com.deepaksharma.webaddicted.ui.folder.BaseDemoActivity;
 import com.deepaksharma.webaddicted.ui.folder.HomeActivity;
 import com.google.android.gms.drive.DriveContents;
@@ -43,31 +57,69 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkContinuation;
+import androidx.work.WorkManager;
+
+import static com.deepaksharma.webaddicted.Final.BackUpUtility.deleteWork;
+
 public class CreateDirectory extends BaseDemoActivity implements View.OnClickListener {
     String TAG = CreateDirectory.class.getSimpleName();
     ActivityCreateDirectoryBinding createDirectoryBinding;
     CreateViewModel createViewModel;
     DriveId uploadDriveId;
     String fileName;
+    MyAppDatabase db;
+    WorkManager mWorkManger;
+    //    WorkContinuation continuation;
+    OneTimeWorkRequest checkGoogleSignIn, createDirectory, mediaUploadRequest,
+            dbUploadDbRequest, dbRetriveRequest, mediaRetrieveRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final Window win = getWindow();
+        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
         createDirectoryBinding = DataBindingUtil.setContentView(this, R.layout.activity_create_directory);
 //        createViewModel = ViewModelProviders.of(this).get(CreateViewModel.class);
-
+        createDirectoryBinding.createDb.setOnClickListener(this);
         createDirectoryBinding.createDirectory.setOnClickListener(this);
         createDirectoryBinding.deleteDirectory.setOnClickListener(this);
         createDirectoryBinding.drivePage.setOnClickListener(this);
         createDirectoryBinding.downloadFile.setOnClickListener(this);
         createDirectoryBinding.uploadFile.setOnClickListener(this);
         createDirectoryBinding.createFolder.setOnClickListener(this);
+        createDirectoryBinding.uploadWorker.setOnClickListener(this);
+        createDirectoryBinding.retriveWorker.setOnClickListener(this);
 
 
+//        db = DBUtilites.getInstance(this);
+        initWorker();
 //      all drive api work on background thread
 //     Task.await is used to pull driver process in main thread
+
     }
 
+    private void initWorker() {
+        mWorkManger = WorkManager.getInstance();
+        checkGoogleSignIn = new OneTimeWorkRequest.Builder(CheckGoogleSignInWork.class)
+                .build();
+        createDirectory = new OneTimeWorkRequest.Builder(DriveDirectoryWork.class)
+                .build();
+        mediaUploadRequest = new OneTimeWorkRequest.Builder(UploadMediaWork.class)
+                .build();
+        dbUploadDbRequest = new OneTimeWorkRequest.Builder(UploadDbWork.class)
+                .build();
+        dbRetriveRequest = new OneTimeWorkRequest.Builder(RetriveDbWork.class)
+                .build();
+        mediaRetrieveRequest = new OneTimeWorkRequest.Builder(RetrieveMediaWork.class)
+                .build();
+
+    }
+
+    @SuppressLint("RestrictedApi")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -85,11 +137,11 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
                     public void Success(DriveId driveId) {
                         uploadDriveId = driveId;
                         if (isDriveInitialized()) {
-                            Toast.makeText(CreateDirectory.this, "isDriveInitialized() true", Toast.LENGTH_SHORT).show();
+                            showMessage("isDriveInitialized() true");
                             init();
                             pickFile();
                         } else {
-                            Toast.makeText(CreateDirectory.this, "isDriveInitialized() false", Toast.LENGTH_SHORT).show();
+                            showMessage("isDriveInitialized() false");
                             init();
                         }
                     }
@@ -108,8 +160,8 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
                         @Override
                         public void Success(DriveId driveId) {
                             try {
-                                BackupConstant.showDialog(CreateDirectory.this,"Downloading...");
-                                retrieveDriveData(driveId.asDriveFile(), BackupConstant.getFolderPath() + fileName);
+                                BackupConstant.showDialog(CreateDirectory.this, "Downloading...");
+                                retrieveDriveData(driveId.asDriveFile(), BackupConstant.getParentFolder().toString() + "/" + fileName);
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             } catch (InterruptedException e) {
@@ -122,7 +174,7 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
                             showMessage("file not exist");
                         }
                     });
-                }else{
+                } else {
                     showMessage("please upload file first");
                 }
                 break;
@@ -142,6 +194,44 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
                     }
                 });
                 break;
+            case R.id.createDb:
+//                for (int i = 0; i < 5; i++) {
+//                    UserInfo userInfo = new UserInfo();
+//                    userInfo.setName("Deepak_" + System.currentTimeMillis());
+//                    userInfo.setMobileno("9024061407_" + System.currentTimeMillis());
+//                    DBUtilites.getInstance(this).userDao().insertUser(userInfo);
+//                }
+                Intent intent = new Intent(this, ReceiverCode.class);
+                sendBroadcast(intent);
+                finish();
+                showMessage("Db Successfully created.");
+                break;
+            case R.id.uploadWorker:
+                deleteWork();
+                WorkContinuation continuation =
+                        mWorkManger.beginWith(checkGoogleSignIn);
+                continuation = continuation.then(createDirectory);
+                continuation = continuation.then(mediaUploadRequest);
+                continuation = continuation.then(dbUploadDbRequest);
+                continuation.enqueue();
+                PreferenceUtil.getInstance().setPreference(PreferenceConstant.WORKER_CHECK_SIGN_IN, checkGoogleSignIn.getStringId());
+                PreferenceUtil.getInstance().setPreference(PreferenceConstant.WORKER_CREATE_DIRECTORY, createDirectory.getStringId());
+                PreferenceUtil.getInstance().setPreference(PreferenceConstant.WORKER_UPLOAD_MEDIA, mediaUploadRequest.getStringId());
+                PreferenceUtil.getInstance().setPreference(PreferenceConstant.WORKER_UPLOAD_DB, dbUploadDbRequest.getStringId());
+                break;
+            case R.id.retriveWorker:
+                deleteWork();
+                WorkContinuation continuation12 =
+                        mWorkManger.beginWith(checkGoogleSignIn);
+                continuation12 = continuation12.then(createDirectory);
+                continuation12 = continuation12.then(dbRetriveRequest);
+                continuation12 = continuation12.then(mediaRetrieveRequest);
+                continuation12.enqueue();
+                PreferenceUtil.getInstance().setPreference(PreferenceConstant.WORKER_CHECK_SIGN_IN, checkGoogleSignIn.getStringId());
+                PreferenceUtil.getInstance().setPreference(PreferenceConstant.WORKER_CREATE_DIRECTORY, createDirectory.getStringId());
+                PreferenceUtil.getInstance().setPreference(PreferenceConstant.WORKER_RETRIVE_DB, dbRetriveRequest.getStringId());
+                PreferenceUtil.getInstance().setPreference(PreferenceConstant.WORKER_RETRIVE_MEDIA, mediaRetrieveRequest.getStringId());
+                break;
         }
     }
 
@@ -153,10 +243,8 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
         isFolderExist(BackupConstant.parentFolderName, new CallbackListener() {
             @Override
             public void Success(DriveId driveId) {
-                if (driveId == null)
-                    Toast.makeText(CreateDirectory.this, "Folder not exist.", Toast.LENGTH_SHORT).show();
-                else
-                    createChildFolder(driveId);
+                if (driveId == null) showMessage("Folder not exist.");
+                else createChildFolder(driveId);
             }
 
             @Override
@@ -182,25 +270,23 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
                 .addFilter(Filters.eq(SearchableField.TITLE, folderName))
                 .build();
         queryTask = getDriveResourceClient().query(query);
-
-        queryTask
-                .addOnSuccessListener(this,
-                        metadataBuffer -> {
-                            Metadata metadata = null;
-                            for (Metadata mss : metadataBuffer) {
-                                if (mss.getTitle().equals(folderName)) {
+        queryTask.addOnSuccessListener(this,
+                metadataBuffer -> {
+                    Metadata metadata = null;
+                    for (Metadata mss : metadataBuffer) {
+                        if (mss.getTitle().equals(folderName)) {
 //                                    strDriveId = mss.getDriveId().encodeToString();
 //                                        DriveId.decodeFromString()
 //                                    DriveFolder driveFolderName = mss.getDriveId().asDriveFolder();
-                                    metadata = mss;
-                                    break;
-                                }
-                            }
-                            if (metadata != null)
-                                callbackListener.Success(metadata.getDriveId());
-                            else
-                                callbackListener.Failure();
-                        })
+                            metadata = mss;
+                            break;
+                        }
+                    }
+                    if (metadata != null)
+                        callbackListener.Success(metadata.getDriveId());
+                    else
+                        callbackListener.Failure();
+                })
                 .addOnFailureListener(this, e -> {
                     Log.e(TAG, "Error retrieving files", e);
                 });
@@ -392,21 +478,21 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
                 });
     }
 
-    private void createChildFolder(DriveId driveId) {
+    private void createChildFolder(DriveId driveIds) {
         List<String> childLiat = BackupConstant.getChildFolder();
         for (String folderName : childLiat) {
             isFolderExist(folderName, new CallbackListener() {
                 @Override
                 public void Success(DriveId driveId) {
-                    Log.d(TAG, "Success: Folder created -> ");
+                    Log.d(TAG, "Success: Folder created  -> ");
                 }
 
                 @Override
                 public void Failure() {
-                    createFolderInFolder(folderName, driveId.asDriveFolder(), new CallbackListener() {
+                    createFolderInFolder(folderName, driveIds.asDriveFolder(), new CallbackListener() {
                         @Override
                         public void Success(DriveId driveId) {
-                            showMessage("folder successfully created "+driveId);
+                            showMessage("folder successfully created " + driveId);
                             Log.d(TAG, "Success : -> " + driveId);
                         }
 
@@ -424,12 +510,14 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
 
     public interface CallbackListener {
         void Success(DriveId driveId);
+
         void Failure();
     }
 
     private void pickFile() {
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
         chooseFile.setType("*/*");
+        chooseFile.putExtra("return-data", false);
         startActivityForResult(Intent.createChooser(chooseFile, "Choose a file"),
                 BackupConstant.PICKFILE_RESULT_CODE);
     }
@@ -447,6 +535,7 @@ public class CreateDirectory extends BaseDemoActivity implements View.OnClickLis
 
         }
     }
+
 
     public String getPath(Uri uri) {
         String path = null;

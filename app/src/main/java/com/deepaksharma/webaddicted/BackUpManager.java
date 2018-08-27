@@ -87,7 +87,7 @@ public class BackUpManager {
                     }
                     String fileName = file.getName();
                     MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                            .setTitle("DBName")
+                            .setTitle(file.getName())
                             .setStarred(false)
                             .build();
 
@@ -102,34 +102,31 @@ public class BackUpManager {
         Task<DriveContents> openFileTask = mDriveResourceClient.openFile(driveFile, DriveFile.MODE_READ_ONLY);
         DriveContents driveContents = Tasks.await(openFileTask);
         Task<Void> discard = openFileTask
-                .continueWithTask(new Continuation<DriveContents, Task<Void>>() {
-                    @Override
-                    public Task<Void> then(@NonNull Task<DriveContents> task) throws Exception {
-                        DriveContents contents = task.getResult();
-                        try {
-                            ParcelFileDescriptor parcelFileDescriptor = contents.getParcelFileDescriptor();
-                            FileInputStream fileInputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
+                .continueWithTask(task -> {
+                    DriveContents contents = task.getResult();
+                    try {
+                        ParcelFileDescriptor parcelFileDescriptor = contents.getParcelFileDescriptor();
+                        FileInputStream fileInputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
 
-                            // Open the empty db as the output stream
-                            OutputStream output = new FileOutputStream(file);
+                        // Open the empty db as the output stream
+                        OutputStream output = new FileOutputStream(file);
 
-                            // Transfer bytes from the inputfile to the outputfile
-                            byte[] buffer = new byte[1024];
-                            int length;
-                            while ((length = fileInputStream.read(buffer)) > 0) {
-                                output.write(buffer, 0, length);
-                            }
-
-                            // Close the streams
-                            output.flush();
-                            output.close();
-                            fileInputStream.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        // Transfer bytes from the inputfile to the outputfile
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = fileInputStream.read(buffer)) > 0) {
+                            output.write(buffer, 0, length);
                         }
-                        return mDriveResourceClient.discardContents(contents);
 
+                        // Close the streams
+                        output.flush();
+                        output.close();
+                        fileInputStream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    return mDriveResourceClient.discardContents(contents);
+
                 });
         Tasks.await(discard);
         return file;

@@ -13,11 +13,16 @@ import java.util.List;
  */
 
 public class BackupConstant {
-    public static final String parentFolderName = "BC_112";
-    public static final String subFolderMessageName = "Message_112";
-    public static final String subFolderMediaName = "Media_112";
-    public static final String subFolderGalleryName = "Gallery_112";
-    public static final String subFolderGallerythumbName = "Gallery_thumb_112";
+    public static final String KEY_GOOGLE_SIGN_UP_ACCOUNT = "currentGoogleSignUp";
+    public static final String DBNAME = "google_1123.db";
+    public static final String BACKUP_SIZE = "google_size_1123.txt";
+    public static final String USER_INFO_TABLE_NAME = "user_info";
+    public static final String MEDIA_INFO_TABLE_NAME = "media_info";
+    public static final String parentFolderName = "Google_1123";
+    public static final String subFolderMessageName = "Message_1123";
+    public static final String subFolderMediaName = "Media_1123";
+    public static final String subFolderGalleryName = "Gallery_1123";
+    public static final String subFolderGallerythumbName = "Gallery_thumb_1123";
     public static final int PICKFILE_RESULT_CODE = 256;
     private static ProgressDialog progressDialog;
 
@@ -56,8 +61,13 @@ public class BackupConstant {
             progressDialog = null;
         }
     }
-
-    public static String getFolderPath(){
-        return Environment.getExternalStorageDirectory()+"/"+BackupConstant.parentFolderName+"/";
+    public static File getParentFolder(){
+        return new File(Environment.getExternalStorageDirectory()+"/"+BackupConstant.parentFolderName);
+    }
+    public static File getFolderPath(String folderName){
+        return new File(Environment.getExternalStorageDirectory()+"/"+BackupConstant.parentFolderName+"/"+folderName);
+    }
+    public enum BackupStatus{
+        UPLOADED, DOWNLOADED, FAILED
     }
 }

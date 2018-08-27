@@ -17,15 +17,23 @@
     package="com.deepaksharma.webaddicted"
     android:versionCode="1"
     android:versionName="1.0">
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="26" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.REBOOT"/>
+
 
     <application
         android:name=".GlobalClass"
@@ -34,8 +42,9 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.deepaksharma.webaddicted.Final.create.CreateDirectory"
-            android:label="@string/app_name">
+            android:name=".Final.create.CreateDirectory"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,43 +60,48 @@
             android:value="@string/google_maps_key" />
 
         <service
-            android:name="com.deepaksharma.webaddicted.ui.events.MyDriveEventService"
+            android:name=".ui.events.MyDriveEventService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.drive.events.HANDLE_EVENT" />
             </intent-filter>
         </service>
+        <receiver android:name=".ReceiverCode">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
-        <activity android:name="com.deepaksharma.webaddicted.MainActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.HomeActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.RetrieveContentsActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.RetrieveContentsWithProgressDialogActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFileActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateEmptyFileActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFileInAppFolderActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFolderActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.DeleteFileActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.AppendContentsActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.RewriteContentsActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.EditMetadataActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFileWithCreatorActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.RetrieveMetadataActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFileInFolderActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.CreateFolderInFolderActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesInFolderActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.PinFileActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.events.ListenChangeEventsForFilesActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.events.SubscribeChangeEventsForFilesActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryNonTextFilesActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesSharedWithMeActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesWithTitleActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryStarredTextFilesActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryTextOrHtmlFilesActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.InsertUpdateCustomPropertyActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QueryFilesWithCustomPropertyActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.DeleteCustomPropertyActivity" />
-        <activity android:name="com.deepaksharma.webaddicted.ui.folder.QuerySortedFilesActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".ui.folder.HomeActivity" />
+        <activity android:name=".ui.folder.QueryFilesActivity" />
+        <activity android:name=".ui.folder.RetrieveContentsActivity" />
+        <activity android:name=".ui.folder.RetrieveContentsWithProgressDialogActivity" />
+        <activity android:name=".ui.folder.CreateFileActivity" />
+        <activity android:name=".ui.folder.CreateEmptyFileActivity" />
+        <activity android:name=".ui.folder.CreateFileInAppFolderActivity" />
+        <activity android:name=".ui.folder.CreateFolderActivity" />
+        <activity android:name=".ui.folder.DeleteFileActivity" />
+        <activity android:name=".ui.folder.AppendContentsActivity" />
+        <activity android:name=".ui.folder.RewriteContentsActivity" />
+        <activity android:name=".ui.folder.EditMetadataActivity" />
+        <activity android:name=".ui.folder.CreateFileWithCreatorActivity" />
+        <activity android:name=".ui.folder.RetrieveMetadataActivity" />
+        <activity android:name=".ui.folder.CreateFileInFolderActivity" />
+        <activity android:name=".ui.folder.CreateFolderInFolderActivity" />
+        <activity android:name=".ui.folder.QueryFilesInFolderActivity" />
+        <activity android:name=".ui.folder.PinFileActivity" />
+        <activity android:name=".ui.events.ListenChangeEventsForFilesActivity" />
+        <activity android:name=".ui.events.SubscribeChangeEventsForFilesActivity" />
+        <activity android:name=".ui.folder.QueryNonTextFilesActivity" />
+        <activity android:name=".ui.folder.QueryFilesSharedWithMeActivity" />
+        <activity android:name=".ui.folder.QueryFilesWithTitleActivity" />
+        <activity android:name=".ui.folder.QueryStarredTextFilesActivity" />
+        <activity android:name=".ui.folder.QueryTextOrHtmlFilesActivity" />
+        <activity android:name=".ui.folder.InsertUpdateCustomPropertyActivity" />
+        <activity android:name=".ui.folder.QueryFilesWithCustomPropertyActivity" />
+        <activity android:name=".ui.folder.DeleteCustomPropertyActivity" />
+        <activity android:name=".ui.folder.QuerySortedFilesActivity" />
 
     </application>
 

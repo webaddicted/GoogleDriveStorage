@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
+import com.deepaksharma.webaddicted.preference.PreferenceConstant;
+import com.deepaksharma.webaddicted.preference.PreferenceUtil;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.Scope;
@@ -32,6 +34,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import androidx.work.WorkManager;
+
 import static com.deepaksharma.webaddicted.Final.BackupConstant.parentFolderName;
 import static com.deepaksharma.webaddicted.Final.BackupConstant.subFolderGalleryName;
 import static com.deepaksharma.webaddicted.Final.BackupConstant.subFolderGallerythumbName;
@@ -39,7 +42,7 @@ import static com.deepaksharma.webaddicted.Final.BackupConstant.subFolderMediaNa
 import static com.deepaksharma.webaddicted.Final.BackupConstant.subFolderMessageName;
 
 /**
- * Created by rahil on 2/8/18.
+ * Created by Deepak Sharma on 2/8/18.
  */
 
 public class BackUpUtility {
@@ -54,53 +57,43 @@ public class BackUpUtility {
         return false;
     }
 
+    //
     public static File[] getLocalFilesInFolder(String folderName) {
-        File[] files = null;
-        if (folderName.equals(BackupConstant.subFolderGalleryName))
-            files = new File(Environment.getExternalStorageDirectory()+"/"+parentFolderName+"/"+folderName).listFiles();
-        else if (folderName.equals(BackupConstant.subFolderGallerythumbName))
-            files = new File(Environment.getExternalStorageDirectory()+"/"+parentFolderName+"/"+folderName).listFiles();
-        else if (folderName.equals(BackupConstant.subFolderMediaName))
-            files = new File(Environment.getExternalStorageDirectory()+"/"+parentFolderName+"/"+folderName).listFiles();
-        else if (folderName.equals(BackupConstant.subFolderMessageName))
-            files = new File(Environment.getExternalStorageDirectory()+"/"+parentFolderName+"/"+folderName).listFiles();
-        return files;
+        return new File(Environment.getExternalStorageDirectory() + "/" + parentFolderName + "/" + folderName).listFiles();
     }
 
-//    public static String getLocalPathWithFileName(String folderName, String fileName) {
-//        String filePath = null;
-//        if (folderName.equals(DbConstant.SUB_FOLDER_COMPRESS_VIDEO))
-//            filePath = FileUtils.getCompressVideoFolder().toString() + "/" + fileName;
-//        else if (folderName.equals(DbConstant.SUB_FOLDER_PROFILE))
-//            filePath = FileUtils.getProfileFolder().toString() + "/" + fileName;
-//        else if (folderName.equals(DbConstant.SUB_FOLDER_RECEIVED))
-//            filePath = FileUtils.getReceivedFolder().toString() + "/" + fileName;
-//        else if (folderName.equals(DbConstant.SUB_FOLDER_SENT))
-//            filePath = FileUtils.getSentFolder().toString() + "/" + fileName;
-//        else if (folderName.equals(DbConstant.SUB_FOLDER_TEMP))
-//            filePath = FileUtils.getTempFolder().toString() + "/" + fileName;
-//        else if (folderName.equals(DbConstant.SUB_FOLDER_THUMBS))
-//            filePath = FileUtils.getThumbsFolder().toString() + "/" + fileName;
-//        return filePath;
-//    }
-
     public static void deleteWork() {
-        String uploadWork = null; //= worker id
-        String downLoadWork = null ; //= worker id
-        String uploadDb = null ;//= worker id;
+        String signInWorker = PreferenceUtil.getInstance().getPreference(PreferenceConstant.WORKER_CHECK_SIGN_IN, "");
+        String createDirectoryWorker = PreferenceUtil.getInstance().getPreference(PreferenceConstant.WORKER_CHECK_SIGN_IN, "");
+        String uploadMediaWorker = PreferenceUtil.getInstance().getPreference(PreferenceConstant.WORKER_CHECK_SIGN_IN, "");
+        String uploadDbWorker = PreferenceUtil.getInstance().getPreference(PreferenceConstant.WORKER_CHECK_SIGN_IN, "");
+        String retriveDbWorker = PreferenceUtil.getInstance().getPreference(PreferenceConstant.WORKER_RETRIVE_DB, "");
+        String retriveMediaWorker = PreferenceUtil.getInstance().getPreference(PreferenceConstant.WORKER_RETRIVE_MEDIA, "");
 
-        if (uploadWork != null && uploadWork.length() > 1) {
-            WorkManager.getInstance().cancelWorkById(UUID.fromString(uploadWork));
-            Log.d("", "scheduleWork: " + uploadWork);
+        if (signInWorker != null && signInWorker.length() > 1) {
+            WorkManager.getInstance().cancelWorkById(UUID.fromString(signInWorker));
+            Log.d("", "signInWorker: " + signInWorker);
         }
-        if (downLoadWork != null && downLoadWork.length() > 1) {
-            WorkManager.getInstance().cancelWorkById(UUID.fromString(downLoadWork));
-            Log.d("", "scheduleWork: " + downLoadWork);
+        if (createDirectoryWorker != null && createDirectoryWorker.length() > 1) {
+            WorkManager.getInstance().cancelWorkById(UUID.fromString(createDirectoryWorker));
+            Log.d("", "createDirectoryWorker: " + createDirectoryWorker);
         }
 
-        if (uploadDb != null && uploadDb.length() > 1) {
-            WorkManager.getInstance().cancelWorkById(UUID.fromString(uploadDb));
-            Log.d("", "scheduleWork: " + uploadDb);
+        if (uploadMediaWorker != null && uploadMediaWorker.length() > 1) {
+            WorkManager.getInstance().cancelWorkById(UUID.fromString(uploadMediaWorker));
+            Log.d("", "uploadMediaWorker: " + uploadMediaWorker);
+        }
+        if (uploadDbWorker != null && uploadDbWorker.length() > 1) {
+            WorkManager.getInstance().cancelWorkById(UUID.fromString(uploadDbWorker));
+            Log.d("", "uploadDbWorker: " + uploadDbWorker);
+        }
+        if (retriveDbWorker != null && retriveDbWorker.length() > 1) {
+            WorkManager.getInstance().cancelWorkById(UUID.fromString(retriveDbWorker));
+            Log.d("", "retriveDbWorker: " + retriveDbWorker);
+        }
+        if (retriveMediaWorker != null && retriveMediaWorker.length() > 1) {
+            WorkManager.getInstance().cancelWorkById(UUID.fromString(retriveMediaWorker));
+            Log.d("", "retriveMediaWorker: " + retriveMediaWorker);
         }
     }
 
@@ -123,8 +116,6 @@ public class BackUpUtility {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
         return metadata;
     }
 
@@ -141,21 +132,20 @@ public class BackUpUtility {
                     metadata = b;
                     break;
                 }
-
             }
         }
         return metadata;
     }
 
-    public static void deleteExistingFolder(String folderName, DriveResourceClient resourceClient) throws ExecutionException, InterruptedException {
+    public static void deleteExistingFile(String fileName, DriveResourceClient resourceClient) throws ExecutionException, InterruptedException {
         Metadata metadata = null;
         Query query = new Query.Builder()
-                .addFilter(Filters.eq(SearchableField.TITLE, folderName))
+                .addFilter(Filters.eq(SearchableField.TITLE, fileName))
                 .build();
         Task<MetadataBuffer> queryTask = resourceClient.query(query);
         MetadataBuffer metadataBuffer = Tasks.await(queryTask);
         for (Metadata b : metadataBuffer) {
-            if (b.getTitle().equals(folderName)) {
+            if (b.getTitle().equals(fileName)) {
                 metadata = b;
                 Task<Void> deleteTask = deleteExistingFile(resourceClient, metadata.getDriveId().asDriveFile());
                 Tasks.await(deleteTask);
@@ -203,7 +193,7 @@ public class BackUpUtility {
     }
 
     public static List<String> getMediaFoldersName() {
-        List<String>mediaFolderName = new ArrayList<>();
+        List<String> mediaFolderName = new ArrayList<>();
         mediaFolderName.add(subFolderGalleryName);
         mediaFolderName.add(subFolderGallerythumbName);
         mediaFolderName.add(subFolderMediaName);
@@ -212,9 +202,9 @@ public class BackUpUtility {
     }
 
 
-//    public static File getDbFile(Context context) {
-//        return context.getDatabasePath(DbConstant.DATABASENAME);
-//    }
+    public static File getDbFile(Context context) {
+        return context.getDatabasePath(BackupConstant.DBNAME);
+    }
 
 //    public static int getTotalFilesToUpload() {
 //        int totalSize = 0;
@@ -224,7 +214,6 @@ public class BackUpUtility {
 //        }
 //        return totalSize;
 //    }
-
 
 
 }

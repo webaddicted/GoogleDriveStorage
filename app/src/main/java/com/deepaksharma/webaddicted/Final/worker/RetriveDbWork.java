@@ -5,8 +5,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.deepaksharma.webaddicted.BackUpManager;
-import com.deepaksharma.webaddicted.Final.BackUpConstants;
 import com.deepaksharma.webaddicted.Final.BackUpUtility;
+import com.deepaksharma.webaddicted.Final.BackupConstant;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.DriveResourceClient;
 import com.google.android.gms.drive.Metadata;
@@ -27,7 +27,7 @@ public class RetriveDbWork extends Worker {
     public WorkerResult doWork() {
         Data inputData = getInputData();
         if (inputData != null) {
-            String email = inputData.getString(BackUpConstants.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");
+            String email = inputData.getString(BackupConstant.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");
             if (!TextUtils.isEmpty(email)) {
                 signInAccount = BackUpUtility.getGoogleSignInAccount(getApplicationContext());
                 setOutputData(sendCurrentSignedInAccount(signInAccount));
@@ -61,9 +61,9 @@ public class RetriveDbWork extends Worker {
     private Data sendCurrentSignedInAccount(GoogleSignInAccount current) {
         Data.Builder builder = new Data.Builder();
         if (current != null) {
-            builder.putString(BackUpConstants.KEY_GOOGLE_SIGN_UP_ACCOUNT, current.getEmail());
+            builder.putString(BackupConstant.KEY_GOOGLE_SIGN_UP_ACCOUNT, current.getEmail());
         } else {
-            builder.putString(BackUpConstants.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");
+            builder.putString(BackupConstant.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");
 
         }
         return builder.build();

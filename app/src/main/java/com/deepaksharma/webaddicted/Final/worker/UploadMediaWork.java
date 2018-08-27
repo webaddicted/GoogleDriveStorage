@@ -5,9 +5,12 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.deepaksharma.webaddicted.BackUpManager;
-import com.deepaksharma.webaddicted.Final.BackUpConstants;
 import com.deepaksharma.webaddicted.Final.BackUpUtility;
 import com.deepaksharma.webaddicted.Final.BackupConstant;
+import com.deepaksharma.webaddicted.db.DBUtilites;
+import com.deepaksharma.webaddicted.db.MediaDao;
+import com.deepaksharma.webaddicted.db.dao.UserDao;
+import com.deepaksharma.webaddicted.db.entity.MediaInfo;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
@@ -16,8 +19,6 @@ import com.google.android.gms.drive.DriveResourceClient;
 import com.google.android.gms.drive.Metadata;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-
-
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,44 +29,42 @@ import java.util.concurrent.TimeoutException;
 import androidx.work.Data;
 import androidx.work.Worker;
 
-
 /**
- * Created by Deepak Sharma
+ * Created by deepaksharma
  */
-
 public class UploadMediaWork extends Worker {
-
-
-GoogleSignInAccount signInAccount;
+    private static final String TAG = UploadMediaWork.class.getSimpleName();
+    GoogleSignInAccount signInAccount;
 
     @NonNull
     @Override
     public WorkerResult doWork() {
         Data inputData = getInputData();
         if (inputData != null) {
-            String email = inputData.getString(BackUpConstants.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");
+            String email = inputData.getString(BackupConstant.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");
             if (!TextUtils.isEmpty(email)) {
                 signInAccount = BackUpUtility.getGoogleSignInAccount(getApplicationContext());
                 setOutputData(sendCurrentSignedInAccount(signInAccount));
                 BackUpManager backUpManager = BackUpManager.getBackUpMangerInstance(signInAccount);
-                List<String> mAllFolders = BackUpUtility.getMediaFoldersName();
                 DriveResourceClient driveResourceClient = backUpManager.getmDriveResourceClient();
                 DriveFile uploadedFile = null;
-//                ChatDao chatDao = backUpManager.getmChatDao();
                 for (String folderName : BackUpUtility.getMediaFoldersName()) {
-                    Metadata metadata = BackUpUtility.isFolderExists(folderName, driveResourceClient);
-                    if (metadata != null) {
-                        try {
-                            DriveFile driveFile = uploadFile(backUpManager, folderName, metadata.getDriveId(), driveResourceClient);
-                            if (driveFile != null) {
-                                Log.d("File Uploaded", driveFile.toString());
+                    File[] mAllFiles = BackUpUtility.getLocalFilesInFolder(folderName);
+                    if (mAllFiles != null && mAllFiles.length > 0) {
+                        Metadata metadata = BackUpUtility.isFolderExists(folderName, driveResourceClient);
+                        if (metadata != null) {
+                            try {
+                                DriveFile driveFile = uploadFile(backUpManager, folderName, metadata.getDriveId(), driveResourceClient);
+                                if (driveFile != null) {
+                                    Log.d("File Uploaded", driveFile.toString());
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (TimeoutException e) {
+                                e.printStackTrace();
                             }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (TimeoutException e) {
-                            e.printStackTrace();
                         }
                     }
                 }
@@ -99,51 +98,34 @@ GoogleSignInAccount signInAccount;
         return mChildFolders;
     }
 
-
-//    private void writeFailedStatusToDisk(DriveFile uploadedFile, ChatDao chatDao) {
-//        ChangeLog changeLog = new ChangeLog();
-//        changeLog.setStatus(AppConstant.FAILED);
-//        changeLog.setFileSize(0); //Length in kb
-//        changeLog.setGoogleDriveFileId("");
-//        chatDao.insert(changeLog);
-//
-//
-//    }
-
     public DriveFile uploadFile(BackUpManager backUpManager, String folderName, DriveId
             driveId, DriveResourceClient driveResourceClient) throws
             InterruptedException, ExecutionException, TimeoutException {
         File[] mAllFiles = BackUpUtility.getLocalFilesInFolder(folderName);
-//        ChatDao mChatdao = backUpManager.getmChatDao();
-        ChangeLog changeLog = new ChangeLog();
+
+        MediaDao mediaDao = DBUtilites.getMediaDao();
+        MediaInfo mediaInfo = new MediaInfo();
         DriveFile driveFile = null;
-        if (mAllFiles !=null && mAllFiles.length > 0) {
+        if (mAllFiles != null && mAllFiles.length > 0) {
             for (File file : mAllFiles) {
                 String fileName = file.getName();
-//                if (TextUtils.isEmpty(mChatdao.getGoogleDriveId(fileName))) {
-//                    Task<DriveFile> mUploadTask = backUpManager.uploadBackup(driveId, file, driveResourceClient);
-//                    driveFile = Tasks.await(mUploadTask);
-//                    if (driveFile != null && driveFile.getDriveId() != null && !TextUtils.isEmpty(driveFile.getDriveId().encodeToString())) {
-//                        changeLog.setStatus(AppConstant.UPLOADED);
-//                        changeLog.setFileSize(file.length() / 1024); //Length in kb
-//                        changeLog.setGoogleDriveFileId(driveFile.getDriveId().encodeToString());
-//                    } else {
-//                        changeLog.setStatus(AppConstant.FAILED);
-//                        changeLog.setFileSize(0); //Length in kb
-//                        changeLog.setGoogleDriveFileId("");
-//                    }
-//                    changeLog.setFileName(file.getName());
-//                    changeLog.setFolderName(folderName);
-//                    changeLog.setUpdate_time(System.currentTimeMillis());
-//                    mChatdao.insert(changeLog);
-//                    ProgressEvent progressEvent = new ProgressEvent();
-//                    int count = mChatdao.getAllNumbersOfFilesUploaded(AppConstant.UPLOADED);
-//                    int totalFiles = BackUpUtility.getTotalFilesToUpload();
-//                    progressEvent.setCurrentProgress(count);
-//                    progressEvent.setTotalProgress(totalFiles);
-//                    EventBus.getDefault().post(progressEvent);
-
-
+                if (TextUtils.isEmpty(mediaDao.getGoogleDriveId(fileName))) {
+                    Task<DriveFile> mUploadTask = backUpManager.uploadBackup(driveId, file, driveResourceClient);
+                    driveFile = Tasks.await(mUploadTask);
+                    if (driveFile != null && driveFile.getDriveId() != null && !TextUtils.isEmpty(driveFile.getDriveId().encodeToString())) {
+                        mediaInfo.setFileStatus(BackupConstant.BackupStatus.UPLOADED.toString());
+                        mediaInfo.setFileSize(file.length() / 1024); //Length in kb
+                        mediaInfo.setDriveId(driveFile.getDriveId().encodeToString());
+                    } else {
+                        mediaInfo.setFileStatus(BackupConstant.BackupStatus.FAILED.toString());
+                        mediaInfo.setFileSize(0); //Length in kb
+                        mediaInfo.setDriveId("");
+                    }
+                    mediaInfo.setName(file.getName());
+                    mediaInfo.setFolderName(folderName);
+                    mediaInfo.setUploadDate(System.currentTimeMillis());
+//                    myDao.insertMedia(mediaInfo);
+                    Log.d(TAG, "uploadFile: ");
                 }
 //                ProgressEvent progressEvent = new ProgressEvent();
 //                int count = mChatdao.getAllNumbersOfFilesUploaded(AppConstant.UPLOADED);
@@ -153,57 +135,17 @@ GoogleSignInAccount signInAccount;
 //                EventBus.getDefault().post(progressEvent);
             }
             return driveFile;
-//        }
-//        return null;
-
-    }
-
-
-    private int getTimeToWait(File file) {
-        int timeToWait = 15;
-        if (file != null && file.length() > 0) {
-            if (getFileLengthInKb(file.length()) > 100) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            } else if (getFileLengthInKb(file.length()) > 500 && getFileLengthInKb(file.length()) < 1000) {
-
-            }
-
-
         }
-        return timeToWait;
-    }
+        return null;
 
-    private long getFileLengthInKb(long length) {
-        return length / 1024;
     }
 
     private Data sendCurrentSignedInAccount(GoogleSignInAccount current) {
         Data.Builder builder = new Data.Builder();
         if (current != null) {
-            builder.putString(BackUpConstants.KEY_GOOGLE_SIGN_UP_ACCOUNT, current.getEmail());
+            builder.putString(BackupConstant.KEY_GOOGLE_SIGN_UP_ACCOUNT, current.getEmail());
         } else {
-            builder.putString(BackUpConstants.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");
-
+            builder.putString(BackupConstant.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");
         }
         return builder.build();
     }

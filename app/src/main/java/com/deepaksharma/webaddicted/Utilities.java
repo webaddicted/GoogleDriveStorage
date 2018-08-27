@@ -26,24 +26,25 @@ public class Utilities {
 //        new Handler().post(() -> {
         Stack<File> dirlist = new Stack<File>();
         dirlist.clear();
-        dirlist.push(new File(Environment.getExternalStorageDirectory()+"/"+BackupConstant.parentFolderName));
+        dirlist.push(BackupConstant.getParentFolder());
         while (!dirlist.isEmpty()) {
             File dirCurrent = dirlist.pop();
             File[] fileList = dirCurrent.listFiles();
+            if(fileList!=null && fileList.length>0){
             for (File f : fileList) {
                 if (f.isDirectory())
                     dirlist.push(f);
                 else
                     result[0] += f.length();
             }
-        }
+        }}
 //        });
         return result[0];
 
     }
 
     public static void saveSizeInFile(String fileSize) {
-        File file = new File(BackupConstant.parentFolderName, "another txt file name which store media file");
+        File file = new File(BackupConstant.getParentFolder(), BackupConstant.BACKUP_SIZE);
         FileOutputStream fileOutputStream = null;
         JSONObject jsonObject = new JSONObject();
         try {
@@ -69,7 +70,7 @@ public class Utilities {
 
     public static String readFile(){
         String result = null;
-        File file = new File(BackupConstant.parentFolderName, "another txt file name which store media size");
+        File file = new File(BackupConstant.parentFolderName, BackupConstant.BACKUP_SIZE);
         StringBuilder text = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
