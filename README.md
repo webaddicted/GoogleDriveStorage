@@ -12,3 +12,4 @@
 # ScreenShot
 
 ![Analytics](https://github.com/webaddicted/GoogleDriveStorage/blob/master/screenshot/home.png)
+![Analytics](https://github.com/webaddicted/GoogleDriveStorage/blob/master/screenshot/hide_file.png)
