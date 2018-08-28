@@ -94,20 +94,27 @@ public class Utilities {
     }
 
     public static boolean hideFile(File file) {
-        File dstFile = new File(file.getParent(), "."  + file.getName());
+        File dstFile = new File(file.getParent(), "." + file.getName());
         return file.renameTo(dstFile);
     }
 
     public static void unhideFile(File file) {
-        String fileName = file.getName().replace("." + APP_NAME, "");
-        Log.d(TAG, "unhideFile: old File name -> " + file.getName() + "\n New FileName -> " + fileName);
-        File dstFile = new File(file.getParent(), fileName);
-        file.renameTo(dstFile);
+        if (file.exists()) {
+            String fileName = file.getName().replace("." + APP_NAME, "");
+            Log.d(TAG, "unhideFile: old File name -> " + file.getName() + "\n New FileName -> " + fileName);
+            File dstFile = new File(file.getParent(), fileName);
+            file.renameTo(dstFile);
+        }
     }
 
     public static void openHiddenFile(File file) {
         File dstFile = new File(file.getParent(), "/." + APP_NAME + file.getName());
         file.renameTo(dstFile);
+    }
+
+    public static void deleteFile(File file) {
+        if (file.exists())
+            file.delete();
     }
 
     public static void showMessage(String message) {

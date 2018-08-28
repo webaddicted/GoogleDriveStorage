@@ -20,9 +20,9 @@ public interface HiddenDao {
     public List<HiddenInfo> getHiddenFile();
 
     @Delete
-    public void deleteUser(HiddenInfo hiddenInfo);
+    public void deleteFileInfo(HiddenInfo hiddenInfo);
 
     @Update
-    public void updateUserInfo(HiddenInfo hiddenInfo);
+    public void updateFileInfo(HiddenInfo hiddenInfo);
 
 }

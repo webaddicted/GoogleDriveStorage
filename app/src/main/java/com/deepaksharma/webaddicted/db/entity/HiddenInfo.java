@@ -14,6 +14,7 @@ public class HiddenInfo {
     private String fileStatus;
     private String filePath;
     private long fileDate;
+    private boolean isCheck;
 
     public int getId() {
         return id;
@@ -61,5 +62,13 @@ public class HiddenInfo {
 
     public void setFileDate(long fileDate) {
         this.fileDate = fileDate;
+    }
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setCheck(boolean check) {
+        isCheck = check;
     }
 }

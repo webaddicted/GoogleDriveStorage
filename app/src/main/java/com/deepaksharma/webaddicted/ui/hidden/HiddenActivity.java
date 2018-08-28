@@ -28,6 +28,8 @@ public class HiddenActivity extends BaseActivity implements View.OnClickListener
         hiddenBinding = DataBindingUtil.setContentView(this, R.layout.activity_hidden);
         hiddenViewModel = ViewModelProviders.of(this).get(HiddenViewModel.class);
         hiddenBinding.addHidden.setOnClickListener(this);
+        hiddenBinding.txtDelete.setOnClickListener(this);
+        hiddenBinding.txtUnHide.setOnClickListener(this);
 
         hiddenViewModel.getHiddenFile().observe(this, hiddenInfos -> {
             hiddenViewModel.getHideLiveData.postValue(DBUtilites.getHiddenDao().getHiddenFile());
@@ -54,6 +56,7 @@ public class HiddenActivity extends BaseActivity implements View.OnClickListener
             hiddenInfo.setFileName(filePath.getName());
             hiddenInfo.setFilePath(filePath.toString());
             hiddenInfo.setFileSize(filePath.length() / 1024);
+            hiddenInfo.setCheck(false);
             DBUtilites.getHiddenDao().insertFileInfo(hiddenInfo);
             Utilities.showMessage("Provide storage permission/File successfully hide.");
             hiddenViewModel.getHideLiveData.postValue(DBUtilites.getHiddenDao().getHiddenFile());
@@ -67,6 +70,12 @@ public class HiddenActivity extends BaseActivity implements View.OnClickListener
         switch (v.getId()) {
             case R.id.add_hidden:
                 pickFile();
+                break;
+            case R.id.txt_delete:
+                hiddenViewModel.deleteFiles(recyclViewAdapter.getFiles());
+                break;
+            case R.id.txt_unHide:
+                hiddenViewModel.unHideFiles(recyclViewAdapter.getFiles());
                 break;
         }
     }
