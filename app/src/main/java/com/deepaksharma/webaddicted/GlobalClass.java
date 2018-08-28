@@ -15,7 +15,6 @@ public class GlobalClass extends Application {
     public void onCreate() {
         super.onCreate();
         BackupConstant.createAppFolder();
-//        DBUtilites.getInstance(this);
         PreferenceUtil.init(getApplicationContext());
         mInstance = this;
     }
