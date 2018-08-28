@@ -30,10 +30,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.REBOOT"/>
-
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".GlobalClass"
@@ -59,6 +58,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <receiver
+            android:name=".receiver.CallReceiver"
+            android:enabled="true">
+            <intent-filter android:priority="10">
+                <action android:name="android.intent.action.PHONE_STATE"></action>
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".ui.events.MyDriveEventService"
             android:exported="true">
@@ -66,11 +73,6 @@
                 <action android:name="com.google.android.gms.drive.events.HANDLE_EVENT" />
             </intent-filter>
         </service>
-        <receiver android:name=".ReceiverCode">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <activity android:name=".MainActivity" />
         <activity android:name=".ui.folder.HomeActivity" />
@@ -102,7 +104,7 @@
         <activity android:name=".ui.folder.QueryFilesWithCustomPropertyActivity" />
         <activity android:name=".ui.folder.DeleteCustomPropertyActivity" />
         <activity android:name=".ui.folder.QuerySortedFilesActivity" />
-
+        <activity android:name=".ui.hidden.HiddenActivity"></activity>
     </application>
 
 </manifest>

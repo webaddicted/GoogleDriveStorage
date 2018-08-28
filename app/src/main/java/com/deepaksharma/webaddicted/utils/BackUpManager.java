@@ -1,8 +1,8 @@
-package com.deepaksharma.webaddicted;
+package com.deepaksharma.webaddicted.utils;
 
 import android.content.Context;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.Drive;
@@ -13,7 +13,6 @@ import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.DriveResourceClient;
 import com.google.android.gms.drive.MetadataChangeSet;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
@@ -30,7 +29,7 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class BackUpManager {
-
+private static final String TAG = BackUpManager.class.getSimpleName();
     private Context mContext;
     private DriveResourceClient mDriveResourceClient;
     private DriveClient mDriveClient;
@@ -117,7 +116,7 @@ public class BackUpManager {
                         while ((length = fileInputStream.read(buffer)) > 0) {
                             output.write(buffer, 0, length);
                         }
-
+                        Log.d(TAG, "retrieveDriveData: save file "+file);
                         // Close the streams
                         output.flush();
                         output.close();

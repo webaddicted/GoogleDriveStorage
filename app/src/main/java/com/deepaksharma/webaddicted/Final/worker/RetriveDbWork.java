@@ -4,9 +4,10 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.deepaksharma.webaddicted.BackUpManager;
-import com.deepaksharma.webaddicted.Final.BackUpUtility;
-import com.deepaksharma.webaddicted.Final.BackupConstant;
+import com.deepaksharma.webaddicted.utils.BackUpManager;
+import com.deepaksharma.webaddicted.utils.BackUpUtility;
+import com.deepaksharma.webaddicted.utils.BackupConstant;
+import com.deepaksharma.webaddicted.GlobalClass;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.DriveResourceClient;
 import com.google.android.gms.drive.Metadata;
@@ -20,11 +21,13 @@ import androidx.work.Data;
 import androidx.work.Worker;
 
 public class RetriveDbWork extends Worker {
+    private static final String TAG = RetriveDbWork.class.getSimpleName();
     GoogleSignInAccount signInAccount;
 
     @NonNull
     @Override
     public WorkerResult doWork() {
+        Log.d(TAG, "doWork: Initialized RetriveDbWork ");
         Data inputData = getInputData();
         if (inputData != null) {
             String email = inputData.getString(BackupConstant.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");
@@ -33,7 +36,7 @@ public class RetriveDbWork extends Worker {
                 setOutputData(sendCurrentSignedInAccount(signInAccount));
                 BackUpManager backUpManager = BackUpManager.getBackUpMangerInstance(signInAccount);
                 DriveResourceClient driveResourceClient = backUpManager.getmDriveResourceClient();
-                Metadata parentMetaData = BackUpUtility.isFolderExists("Db name which available on server", driveResourceClient);
+                Metadata parentMetaData = BackUpUtility.isFolderExists(BackupConstant.DBNAME, driveResourceClient);
                 if (parentMetaData != null) {
                     try {
                         retriveDatabase(backUpManager, parentMetaData);
@@ -53,7 +56,7 @@ public class RetriveDbWork extends Worker {
     }
 
     private String retriveDatabase(BackUpManager backUpManager, Metadata parentMetaData) throws ExecutionException, InterruptedException {
-        File file =null; // complete Db path here
+        File file = BackUpUtility.getDbFile(GlobalClass.getInstance());
         return backUpManager.retrieveDriveData(parentMetaData.getDriveId().asDriveFile(), file.toString());
     }
 

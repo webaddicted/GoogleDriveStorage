@@ -1,9 +1,7 @@
-package com.deepaksharma.webaddicted.Final;
+package com.deepaksharma.webaddicted.utils;
 
 import android.app.ActivityManager;
-import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
@@ -35,12 +33,6 @@ import java.util.concurrent.ExecutionException;
 
 import androidx.work.WorkManager;
 
-import static com.deepaksharma.webaddicted.Final.BackupConstant.parentFolderName;
-import static com.deepaksharma.webaddicted.Final.BackupConstant.subFolderGalleryName;
-import static com.deepaksharma.webaddicted.Final.BackupConstant.subFolderGallerythumbName;
-import static com.deepaksharma.webaddicted.Final.BackupConstant.subFolderMediaName;
-import static com.deepaksharma.webaddicted.Final.BackupConstant.subFolderMessageName;
-
 /**
  * Created by Deepak Sharma on 2/8/18.
  */
@@ -59,7 +51,7 @@ public class BackUpUtility {
 
     //
     public static File[] getLocalFilesInFolder(String folderName) {
-        return new File(Environment.getExternalStorageDirectory() + "/" + parentFolderName + "/" + folderName).listFiles();
+        return new File(Environment.getExternalStorageDirectory() + "/" + BackupConstant.parentFolderName + "/" + folderName).listFiles();
     }
 
     public static void deleteWork() {
@@ -194,10 +186,10 @@ public class BackUpUtility {
 
     public static List<String> getMediaFoldersName() {
         List<String> mediaFolderName = new ArrayList<>();
-        mediaFolderName.add(subFolderGalleryName);
-        mediaFolderName.add(subFolderGallerythumbName);
-        mediaFolderName.add(subFolderMediaName);
-        mediaFolderName.add(subFolderMessageName);
+        mediaFolderName.add(BackupConstant.subFolderGalleryName);
+        mediaFolderName.add(BackupConstant.subFolderGallerythumbName);
+        mediaFolderName.add(BackupConstant.subFolderMediaName);
+        mediaFolderName.add(BackupConstant.subFolderMessageName);
         return mediaFolderName;
     }
 

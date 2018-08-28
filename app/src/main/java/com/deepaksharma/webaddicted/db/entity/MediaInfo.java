@@ -3,12 +3,8 @@ package com.deepaksharma.webaddicted.db.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.graphics.Movie;
-import android.support.annotation.NonNull;
 
-import com.deepaksharma.webaddicted.Final.BackupConstant;
-
-import java.util.Comparator;
+import com.deepaksharma.webaddicted.utils.BackupConstant;
 
 /**
  * Created by deepaksharma on 24/8/18.

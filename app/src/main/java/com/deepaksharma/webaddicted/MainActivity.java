@@ -65,13 +65,13 @@ public class MainActivity extends Activity {
     private static final int REQUEST_CODE_SIGN_IN = 0;
     private static final int REQUEST_CODE_CAPTURE_IMAGE = 1;
     private static final int REQUEST_CODE_CREATOR = 2;
+    protected static final int REQUEST_CODE_OPEN_ITEM = 3;
 
     private GoogleSignInClient mGoogleSignInClient;
     private DriveClient mDriveClient;
     private DriveResourceClient mDriveResourceClient;
     private Bitmap mBitmapToSave;
     private TaskCompletionSource<DriveId> mOpenItemTaskSource;
-    protected static final int REQUEST_CODE_OPEN_ITEM = 3;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

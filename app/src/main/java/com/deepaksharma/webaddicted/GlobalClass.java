@@ -2,8 +2,7 @@ package com.deepaksharma.webaddicted;
 
 import android.app.Application;
 
-import com.deepaksharma.webaddicted.Final.BackupConstant;
-import com.deepaksharma.webaddicted.db.DBUtilites;
+import com.deepaksharma.webaddicted.utils.BackupConstant;
 import com.deepaksharma.webaddicted.preference.PreferenceUtil;
 
 /**

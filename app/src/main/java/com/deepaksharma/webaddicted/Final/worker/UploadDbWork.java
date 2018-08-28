@@ -4,13 +4,12 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.deepaksharma.webaddicted.BackUpManager;
-import com.deepaksharma.webaddicted.Final.BackUpUtility;
-import com.deepaksharma.webaddicted.Final.BackupConstant;
-import com.deepaksharma.webaddicted.Utilities;
+import com.deepaksharma.webaddicted.utils.BackUpManager;
+import com.deepaksharma.webaddicted.utils.BackUpUtility;
+import com.deepaksharma.webaddicted.utils.BackupConstant;
+import com.deepaksharma.webaddicted.utils.Utilities;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.DriveFile;
-import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.DriveResourceClient;
 import com.google.android.gms.drive.Metadata;
@@ -18,8 +17,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -31,6 +28,7 @@ public class UploadDbWork extends Worker {
     @NonNull
     @Override
     public WorkerResult doWork() {
+        Log.d(TAG, "doWork: Initialized UploadDbWork ");
         Data inputData = getInputData();
         if (inputData != null) {
             String email = inputData.getString(BackupConstant.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");

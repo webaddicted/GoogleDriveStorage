@@ -4,7 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.deepaksharma.webaddicted.Final.BackupConstant;
+import com.deepaksharma.webaddicted.utils.BackupConstant;
 
 @Entity(tableName = BackupConstant.USER_INFO_TABLE_NAME)
 public class UserInfo {

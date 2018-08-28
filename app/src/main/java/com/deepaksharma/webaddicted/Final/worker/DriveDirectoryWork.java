@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.deepaksharma.webaddicted.BackUpManager;
-import com.deepaksharma.webaddicted.Final.BackUpUtility;
-import com.deepaksharma.webaddicted.Final.BackupConstant;
+import com.deepaksharma.webaddicted.utils.BackUpManager;
+import com.deepaksharma.webaddicted.utils.BackUpUtility;
+import com.deepaksharma.webaddicted.utils.BackupConstant;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveResourceClient;
@@ -23,12 +23,14 @@ import androidx.work.Worker;
 
 
 public class DriveDirectoryWork extends Worker {
+    private static String TAG = DriveDirectoryWork.class.getSimpleName();
     GoogleSignInAccount signInAccount;
 
     @NonNull
     @Override
     public WorkerResult doWork() {
         Data inputData = getInputData();
+        Log.d(TAG, "doWork: Initialized DriveDirectoryWork ");
         if (inputData != null) {
             String email = inputData.getString(BackupConstant.KEY_GOOGLE_SIGN_UP_ACCOUNT, "");
             if (!TextUtils.isEmpty(email)) {

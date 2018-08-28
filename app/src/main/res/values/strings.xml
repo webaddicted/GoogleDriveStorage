@@ -21,11 +21,8 @@
     <!--client id - &lt;!&ndash;1050687077502-8bi2vhfk749tnu2csi970cnc8k13j6ld.apps.googleusercontent.com&ndash;&gt;-->
     <!--client secret id - mwCYzPDZH4PD5JUHx9A1uieA-->
 
-
     <!-- CLIENT ID         1050687077502-v26krci8iddun19lm4fpmjqniok40ms1.apps.googleusercontent.com-->
     <string name="google_maps_key">AIzaSyBXCDGC0jMf3MAH60FmzX8MqVERnm3OEf8</string>
-
-
     <string name="download_progress">Download Progress:</string>
     <string name="menu_settings">Settings</string>
     <string name="button_subscribe">Listen for Changes</string>

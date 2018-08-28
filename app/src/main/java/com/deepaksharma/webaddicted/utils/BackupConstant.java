@@ -1,4 +1,4 @@
-package com.deepaksharma.webaddicted.Final;
+package com.deepaksharma.webaddicted.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,6 +18,8 @@ public class BackupConstant {
     public static final String BACKUP_SIZE = "google_size_1123.txt";
     public static final String USER_INFO_TABLE_NAME = "user_info";
     public static final String MEDIA_INFO_TABLE_NAME = "media_info";
+    public static final String HIDDEN_INFO_TABLE_NAME = "hidden_info";
+
     public static final String parentFolderName = "Google_1123";
     public static final String subFolderMessageName = "Message_1123";
     public static final String subFolderMediaName = "Media_1123";
@@ -36,16 +38,16 @@ public class BackupConstant {
     }
 
     public static void createAppFolder() {
-        File file ;
-        file = new File(Environment.getExternalStorageDirectory()+"/"+parentFolderName);
+        File file;
+        file = new File(Environment.getExternalStorageDirectory() + "/" + parentFolderName);
         file.mkdirs();
-        file = new File(Environment.getExternalStorageDirectory()+"/"+parentFolderName+"/"+subFolderGalleryName);
+        file = new File(Environment.getExternalStorageDirectory() + "/" + parentFolderName + "/" + subFolderGalleryName);
         file.mkdirs();
-        file = new File(Environment.getExternalStorageDirectory()+"/"+parentFolderName+"/"+subFolderGallerythumbName);
+        file = new File(Environment.getExternalStorageDirectory() + "/" + parentFolderName + "/" + subFolderGallerythumbName);
         file.mkdirs();
-        file = new File(Environment.getExternalStorageDirectory()+"/"+parentFolderName+"/"+subFolderMediaName);
+        file = new File(Environment.getExternalStorageDirectory() + "/" + parentFolderName + "/" + subFolderMediaName);
         file.mkdirs();
-        file = new File(Environment.getExternalStorageDirectory()+"/"+parentFolderName+"/"+subFolderMessageName);
+        file = new File(Environment.getExternalStorageDirectory() + "/" + parentFolderName + "/" + subFolderMessageName);
         file.mkdirs();
     }
 
@@ -61,13 +63,20 @@ public class BackupConstant {
             progressDialog = null;
         }
     }
-    public static File getParentFolder(){
-        return new File(Environment.getExternalStorageDirectory()+"/"+BackupConstant.parentFolderName);
+
+    public static File getParentFolder() {
+        return new File(Environment.getExternalStorageDirectory() + "/" + BackupConstant.parentFolderName);
     }
-    public static File getFolderPath(String folderName){
-        return new File(Environment.getExternalStorageDirectory()+"/"+BackupConstant.parentFolderName+"/"+folderName);
+
+    public static File getFolderPath(String folderName) {
+        return new File(Environment.getExternalStorageDirectory() + "/" + BackupConstant.parentFolderName + "/" + folderName);
     }
-    public enum BackupStatus{
+
+    public static File getLocalPathWithFileName(String folderName, String fileName) {
+        return new File(Environment.getExternalStorageDirectory() + "/" + BackupConstant.parentFolderName + "/" + folderName + "/" + fileName);
+    }
+
+    public enum BackupStatus {
         UPLOADED, DOWNLOADED, FAILED
     }
 }

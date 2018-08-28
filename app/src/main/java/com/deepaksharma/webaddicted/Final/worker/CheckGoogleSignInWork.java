@@ -3,9 +3,9 @@ package com.deepaksharma.webaddicted.Final.worker;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.deepaksharma.webaddicted.BackUpManager;
-import com.deepaksharma.webaddicted.Final.BackUpUtility;
-import com.deepaksharma.webaddicted.Final.BackupConstant;
+import com.deepaksharma.webaddicted.utils.BackUpManager;
+import com.deepaksharma.webaddicted.utils.BackUpUtility;
+import com.deepaksharma.webaddicted.utils.BackupConstant;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.drive.Drive;
@@ -29,6 +29,7 @@ private static String TAG = CheckGoogleSignInWork.class.getSimpleName();
     @NonNull
     @Override
     public WorkerResult doWork() {
+        Log.d(TAG, "doWork: Initialized GoogleSignInWork ");
         GoogleSignInAccount mCurrentAccount = BackUpUtility.getGoogleSignInAccount(getApplicationContext());
         Set<Scope> requiredScopes = new HashSet<>(2);
         requiredScopes.add(Drive.SCOPE_FILE);

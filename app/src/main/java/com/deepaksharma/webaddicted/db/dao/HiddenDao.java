@@ -5,28 +5,24 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
-import com.deepaksharma.webaddicted.db.entity.MediaInfo;
+
+import com.deepaksharma.webaddicted.db.entity.HiddenInfo;
 import com.deepaksharma.webaddicted.db.entity.UserInfo;
 
 import java.util.List;
 
 @Dao
-public interface UserDao {
-
+public interface HiddenDao {
     @Insert
-    public void insertUser(UserInfo userInfo);
+    public void insertFileInfo(HiddenInfo userInfo);
 
-    @Query("SELECT * FROM user_info")
-    public List<UserInfo> getUserInfo();
+    @Query("SELECT * FROM hidden_info")
+    public List<HiddenInfo> getHiddenFile();
 
     @Delete
-    public void deleteUser(UserInfo userInfo);
+    public void deleteUser(HiddenInfo hiddenInfo);
 
     @Update
-    public void updateUserInfo(UserInfo userInfo);
-
-    @Query("DELETE FROM user_info")
-    public void userDeleteData();
-
+    public void updateUserInfo(HiddenInfo hiddenInfo);
 
 }
