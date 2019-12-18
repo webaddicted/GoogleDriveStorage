@@ -11,5 +11,9 @@
 
 # ScreenShot
 
+<img src="https://github.com/webaddicted/GoogleDriveStorage/blob/master/screenshot/home.png" width="400">   <img src="https://github.com/webaddicted/GoogleDriveStorage/blob/master/screenshot/hide_file.png" width="400">
+
+<!--
 ![Analytics](https://github.com/webaddicted/GoogleDriveStorage/blob/master/screenshot/home.png)
 ![Analytics](https://github.com/webaddicted/GoogleDriveStorage/blob/master/screenshot/hide_file.png)
+-->
